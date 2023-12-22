@@ -19,7 +19,7 @@ const jwtSecret = "asdfghjklqwertyuio";
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "http://localhost:5174",
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
@@ -106,7 +106,7 @@ app.post("/upload-by-link", async (req, res) => {
   });
   // const url = await uploadToS3('/tmp/' +newName, newName, mime.lookup('/tmp/' +newName));
   console.log(__dirname + "\\uploads\\" + newName);
-  res.json(__dirname + "\\uploads\\" + newName);
+  res.json(newName);
 });
 
 const photosMiddleware = multer({ dest: "uploads/" });
@@ -114,7 +114,7 @@ const photosMiddleware = multer({ dest: "uploads/" });
 app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
   // console.log(req.files)
   const uploadedFiles = [];
-  console.log(uploadedFiles);
+ 
   for (let i = 0; i < req.files.length; i++) {
     const { path, originalname } = req.files[i];
     const parts = originalname.split(".");
@@ -122,8 +122,9 @@ app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
 
     const newPath = path + "." + ext;
     fs.renameSync(path, newPath);
-
-    uploadedFiles.push(newPath.replace("uploads/", ""));
+    console.log(newPath);
+    uploadedFiles.push(newPath.replace("uploads\\", ""));
+    // console.log(uploadedFiles);
   }
   res.json(uploadedFiles);
 });

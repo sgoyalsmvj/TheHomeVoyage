@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Perks from "../Perks";
-import { PhotoUploader } from "../PhotoUploader";
-import AccountNav from "../AccountNav";
+import Perks from "../components/Perks";
+import { PhotoUploader } from "../components/PhotoUploader";
+import AccountNav from "../components/AccountNav";
 import axios from "axios";
 import { Navigate, useParams } from "react-router-dom";
 
@@ -67,7 +67,7 @@ const PlacesFormPage = () => {
     };
     if (id) {
       // update
-      await axios.put("/places", {
+      await axios.put("/user-places", {
         id,
         ...placeData,
       });

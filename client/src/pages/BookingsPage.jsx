@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import AccountNav from "../AccountNav";
+import AccountNav from "../components/AccountNav";
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import PlaceImg from "../PlaceImg";
-import BookingDates from "../BookingDates";
+import PlaceImg from "../components/PlaceImg";
+import BookingDates from "../components/BookingDates";
 
 const BookingsPage = () => {
   const [bookings, setBookings] = useState([]);
