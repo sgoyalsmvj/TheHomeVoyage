@@ -12,7 +12,7 @@ import PlacesFormPage from "./pages/PlacesFormPage";
 import PlacePage from "./pages/PlacePage";
 import BookingsPage from "./pages/BookingsPage";
 import BookingPage from "./pages/BookingPage";
-axios.defaults.baseURL = process.env.BASEURL;
+axios.defaults.baseURL = import.meta.env.VITE_BASEURL;
 axios.defaults.withCredentials = true;
 function App() {
   return (

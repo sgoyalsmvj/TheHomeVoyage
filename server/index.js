@@ -19,7 +19,7 @@ const jwtSecret = "asdfghjklqwertyuio";
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 const corsOptions = {
-  origin: "process.env.FRONTEND_URL",
+  origin:  process.env.FRONTEND_URL,
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
@@ -251,4 +251,4 @@ app.get("/bookings",async (req, res) => {
   const userData =  await getUserDataFromToken(req);
   res.json(await BookingModel.find({user:userData.id}).populate('place'))
 });
-app.listen(process.env.PORT || 4000);
+app.listen(4000);
