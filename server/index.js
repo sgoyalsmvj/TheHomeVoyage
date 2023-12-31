@@ -251,7 +251,7 @@ app.get("/bookings", async (req, res) => {
   const userData = await getUserDataFromToken(req);
   res.json(await BookingModel.find({ user: userData.id }).populate("place"));
 });
-const PORT = 4000 || process.env.PORT;
+const PORT =  process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`depoyed on port:${PORT}`);
 });
