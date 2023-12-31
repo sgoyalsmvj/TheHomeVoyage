@@ -19,7 +19,7 @@ const jwtSecret = "asdfghjklqwertyuio";
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 const corsOptions = {
-  origin:  process.env.FRONTEND_URL,
+  origin: process.env.FRONTEND_URL,
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
@@ -114,7 +114,7 @@ const photosMiddleware = multer({ dest: "uploads/" });
 app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
   // console.log(req.files)
   const uploadedFiles = [];
- 
+
   for (let i = 0; i < req.files.length; i++) {
     const { path, originalname } = req.files[i];
     const parts = originalname.split(".");
@@ -218,9 +218,9 @@ app.get("/places", async (req, res) => {
   res.json(await PlaceModel.find());
 });
 
-app.post("/bookings",async (req, res) => {
+app.post("/bookings", async (req, res) => {
   const userData = await getUserDataFromToken(req);
-  const { place, checkIn, checkOut, numberOfGuests, name, phone, price,} =
+  const { place, checkIn, checkOut, numberOfGuests, name, phone, price } =
     req.body;
   BookingModel.create({
     place,
@@ -230,7 +230,7 @@ app.post("/bookings",async (req, res) => {
     name,
     phone,
     price,
-    user:userData.id 
+    user: userData.id,
   })
     .then((doc) => {
       res.json(doc);
@@ -247,8 +247,11 @@ function getUserDataFromToken(req) {
     });
   });
 }
-app.get("/bookings",async (req, res) => {
-  const userData =  await getUserDataFromToken(req);
-  res.json(await BookingModel.find({user:userData.id}).populate('place'))
+app.get("/bookings", async (req, res) => {
+  const userData = await getUserDataFromToken(req);
+  res.json(await BookingModel.find({ user: userData.id }).populate("place"));
 });
-app.listen(4000 || process.env.PORT);
+const PORT = 4000 || process.env.PORT;
+app.listen(PORT, () => {
+  console.log(`depoyed on port:${PORT}`);
+});
