@@ -251,4 +251,4 @@ app.get("/bookings",async (req, res) => {
   const userData =  await getUserDataFromToken(req);
   res.json(await BookingModel.find({user:userData.id}).populate('place'))
 });
-app.listen(4000);
+app.listen(process.env.PORT || 4000);
