@@ -3,7 +3,7 @@ export default function Image({ src, ...rest }) {
   const baseUrl = import.meta.env.VITE_BASEURL || '';
 
   // Combine the base URL with the provided src
-  const completeSrc = src && src.includes('https://') ? src : baseUrl + '/uploads/' + src;
+  const completeSrc = src && src.includes('https://') ? src : baseUrl + 'uploads/' + src;
 
   return <img {...rest} src={completeSrc} alt={''} />;
 }
