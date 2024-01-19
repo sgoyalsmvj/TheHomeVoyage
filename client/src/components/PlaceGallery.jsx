@@ -35,7 +35,7 @@ const PlaceGallery = ({ place }) => {
                 <img
                   className="cursor-pointer"
                   onClick={() => setShowAllPhotos(true)}
-                  src={import.meta.env.VITE_BASEURL + "/uploads/" + photo}
+                  src={import.meta.env.VITE_BASEURL + "uploads/" + photo}
                   alt=""
                 />
               </div>
@@ -53,7 +53,7 @@ const PlaceGallery = ({ place }) => {
               <img
                 onClick={() => setShowAllPhotos(true)}
                 className="aspect-square object-cover cursor-pointer"
-                src={import.meta.env.VITE_BASEURL + "/uploads/" + place.photos[0]}
+                src={import.meta.env.VITE_BASEURL + "uploads/" + place.photos[0]}
                 alt=""
               />
             </div>
@@ -64,7 +64,7 @@ const PlaceGallery = ({ place }) => {
             <img
               onClick={() => setShowAllPhotos(true)}
               className="aspect-square object-cover cursor-pointer"
-              src={import.meta.env.VITE_BASEURL + "/uploads/" + place.photos[1]}
+              src={import.meta.env.VITE_BASEURL + "uploads/" + place.photos[1]}
               alt=""
             />
           )}
@@ -73,7 +73,7 @@ const PlaceGallery = ({ place }) => {
               <img
                 onClick={() => setShowAllPhotos(true)}
                 className="aspect-square object-cover  cursor-pointerrelative top-2"
-                src={import.meta.env.VITE_BASEURL + "/uploads/" + place.photos[2]}
+                src={import.meta.env.VITE_BASEURL + "uploads/" + place.photos[2]}
                 alt=""
               />
             )}
