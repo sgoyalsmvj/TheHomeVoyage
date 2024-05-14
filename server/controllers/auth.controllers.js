@@ -31,6 +31,20 @@ export const register = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await UserModel.findOne({ email });
+    if (!user || !bcrypt.compareSync(password, user.password)) {
+      return res.status(401).json({ error: "Wrong username or password." });
+    }
+    res.cookie("token", generateToken(user).status(200).json({ user }));
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 module.exports = {
-  register,
+  register,login
 };
