@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const UserModel = require("./models/user");
+const UserModel = require("./models/User");
 const dotenv = require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -11,6 +11,7 @@ const multer = require("multer");
 const fs = require("fs");
 const PlaceModel = require("./models/Place");
 const BookingModel = require("./models/Booking");
+const connect = require("./db/config");
 
 const app = express();
 const bcryptSalt = bcrypt.genSaltSync(10);
@@ -29,9 +30,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 
-mongoose.connect(process.env.MONGO_URL).then(() => {
-  console.log("MongoDB connected");
-});
+connect();
 
 // Centralized Error Handling Middleware
 app.use((err, req, res, next) => {
