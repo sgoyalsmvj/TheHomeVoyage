@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
 
-export default function generateToken(user) {
+ function generateToken(user) {
   jwt.sign(
-    user,
+    user.toJSON() ,
     process.env.JWT_SECRET,
     {
       expiresIn: "10d",
@@ -13,3 +13,5 @@ export default function generateToken(user) {
     }
   );
 }
+
+module.exports = generateToken;

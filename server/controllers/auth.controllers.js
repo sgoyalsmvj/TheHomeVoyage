@@ -1,9 +1,47 @@
-import generateToken from "../utils/generateToken";
-import validatePassword from "../utils/validatePassword";
-
+const generateToken = require("../utils/generateToken");
+const validatePassword = require("../utils/validatePassword");
+const UserModel = require("../models/User.js");
 const bcrypt = require("bcryptjs");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
-export const register = async (req, res) => {
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/google/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        let user = await UserModel.findOne({ googleId: profile.id });
+        if (!user) {
+          const newUser = await UserModel.create({
+            googleId: profile.id,
+            email: profile.emails[0].value,
+            name: profile.displayName,
+            password: bcrypt.hashSync(profile.id, 10),
+          });
+        }
+        return done(null, user);
+      } catch (error) {
+        return done(error, null);
+      }
+    }
+  )
+);
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await UserModel.findById(id);
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
+});
+const register = async (req, res) => {
   const { email, password, name, mobileNum } = req.body;
   try {
     const userExists = await UserModel.findOne({ email });
@@ -17,14 +55,13 @@ export const register = async (req, res) => {
       });
     }
     const newUser = await UserModel.create({
-      googleId: null,
       email,
-      password: bcrypt.hashSync(password, bcryptSalt),
+      password: bcrypt.hashSync(password, 10),
       name,
       mobileNum,
     });
     res
-      .cookie("token:", generateToken(newUser))
+      .cookie("token", generateToken(newUser))
       .status(201)
       .json({ user: newUser });
   } catch (error) {
@@ -32,7 +69,7 @@ export const register = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await UserModel.findOne({ email });
@@ -45,6 +82,22 @@ export const login = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+const logout = (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to logout" });
+    }
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
+    res.status(200).json({ message: "Successfully logged out" });
+  });
+};
 module.exports = {
-  register,login
+  register,
+  login,
+  logout
 };

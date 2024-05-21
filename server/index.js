@@ -12,7 +12,8 @@ const fs = require("fs");
 const PlaceModel = require("./models/Place");
 const BookingModel = require("./models/Booking");
 const connect = require("./db/config");
-
+const passport = require("passport");
+const cookieSession = require("cookie-session");
 const app = express();
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = process.env.JWT_SECRET || "yourSecretKey";
@@ -29,6 +30,18 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
+// Configure cookie session
+app.use(
+  cookieSession({
+    name: "session",
+    keys: [process.env.COOKIE_KEY],
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  })
+);
+
+// Initialize Passport and session
+app.use(passport.initialize());
+app.use(passport.session());
 
 connect();
 
@@ -36,27 +49,29 @@ connect();
 app.use((err, req, res, next) => {
   console.error(err.stack);
 
-  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-    return res.status(400).json({ error: 'Invalid JSON' });
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    return res.status(400).json({ error: "Invalid JSON" });
   }
 
-  if (err.name === 'ValidationError') {
-    return res.status(422).json({ error: 'Validation failed', details: err.errors });
+  if (err.name === "ValidationError") {
+    return res
+      .status(422)
+      .json({ error: "Validation failed", details: err.errors });
   }
 
-  res.status(500).json({ error: 'Internal Server Error' });
+  res.status(500).json({ error: "Internal Server Error" });
 });
 
 // Authentication Middleware
 const authenticateUser = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
-    return res.status(401).json({ error: 'Unauthorized - No token provided' });
+    return res.status(401).json({ error: "Unauthorized - No token provided" });
   }
 
   jwt.verify(token, jwtSecret, (err, userData) => {
     if (err) {
-      return res.status(401).json({ error: 'Unauthorized - Invalid token' });
+      return res.status(401).json({ error: "Unauthorized - Invalid token" });
     }
     req.userData = userData;
     next();
@@ -67,44 +82,48 @@ app.get("/test", (req, res) => {
   res.json("test ok");
 });
 
-app.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
-  try {
-    const user = await UserModel.create({
-      name,
-      email,
-      password: bcrypt.hashSync(password, bcryptSalt),
-    });
-    res.json(user);
-  } catch (error) {
-    res.status(422).json(error);
-  }
-});
+app.use("/", require("./routes/auth.routes.js"));
 
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  const user = await UserModel.findOne({ email });
+// app.post("/register", async (req, res) => {
+//   const { name, email, password } = req.body;
+//   try {
+//     const user = await UserModel.create({
+//       name,
+//       email,
+//       password: bcrypt.hashSync(password, bcryptSalt),
+//     });
+//     res.json(user);
+//   } catch (error) {
+//     res.status(422).json(error);
+//   }
+// });
 
-  if (!user || !bcrypt.compareSync(password, user.password)) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
+// app.post("/login", async (req, res) => {
+//   const { email, password } = req.body;
+//   const user = await UserModel.findOne({ email });
 
-  jwt.sign(
-    { email: user.email, id: user._id },
-    jwtSecret,
-    {},
-    (err, token) => {
-      if (err) throw err;
-      res.cookie("token", token, { secure: true, sameSite: "none" }).json(user);
-    }
-  );
-});
+//   if (!user || !bcrypt.compareSync(password, user.password)) {
+//     return res.status(401).json({ error: 'Invalid credentials' });
+//   }
+
+//   jwt.sign(
+//     { email: user.email, id: user._id },
+//     jwtSecret,
+//     {},
+//     (err, token) => {
+//       if (err) throw err;
+//       res.cookie("token", token, { secure: true, sameSite: "none" }).json(user);
+//     }
+//   );
+// });
 
 app.get("/profile", authenticateUser, (req, res) => {
   const { id } = req.userData;
   UserModel.findById(id)
-    .then(user => res.json({ name: user.name, email: user.email, id: user._id }))
-    .catch(err => res.status(500).json({ error: 'Internal Server Error' }));
+    .then((user) =>
+      res.json({ name: user.name, email: user.email, id: user._id })
+    )
+    .catch((err) => res.status(500).json({ error: "Internal Server Error" }));
 });
 
 app.post("/logout", (req, res) => {
@@ -123,7 +142,7 @@ app.post("/upload-by-link", async (req, res) => {
     console.log(__dirname + "/uploads/" + newName);
     res.json(newName);
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -177,7 +196,7 @@ app.post("/places", authenticateUser, async (req, res) => {
     });
     res.json(placeData);
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -185,8 +204,8 @@ app.get("/user-places", authenticateUser, (req, res) => {
   const { id } = req.userData;
 
   PlaceModel.find({ owner: id })
-    .then(places => res.json(places))
-    .catch(err => res.status(500).json({ error: 'Internal Server Error' }));
+    .then((places) => res.json(places))
+    .catch((err) => res.status(500).json({ error: "Internal Server Error" }));
 });
 
 app.get("/places/:id", async (req, res) => {
@@ -195,22 +214,34 @@ app.get("/places/:id", async (req, res) => {
   try {
     const place = await PlaceModel.findById(id);
     if (!place) {
-      return res.status(404).json({ error: 'Place not found' });
+      return res.status(404).json({ error: "Place not found" });
     }
     res.json(place);
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 app.put("/user-places", authenticateUser, async (req, res) => {
-  const { id, title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests, price } = req.body;
+  const {
+    id,
+    title,
+    address,
+    addedPhotos,
+    description,
+    perks,
+    extraInfo,
+    checkIn,
+    checkOut,
+    maxGuests,
+    price,
+  } = req.body;
 
   try {
     const placeDoc = await PlaceModel.findById(id);
 
     if (!placeDoc || req.userData.id !== placeDoc.owner.toString()) {
-      return res.status(403).json({ error: 'Forbidden' });
+      return res.status(403).json({ error: "Forbidden" });
     }
 
     placeDoc.set({
@@ -229,7 +260,7 @@ app.put("/user-places", authenticateUser, async (req, res) => {
     await placeDoc.save();
     res.json("ok");
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -238,13 +269,14 @@ app.get("/places", async (req, res) => {
     const places = await PlaceModel.find();
     res.json(places);
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 app.post("/bookings", authenticateUser, async (req, res) => {
   const { id } = req.userData;
-  const { place, checkIn, checkOut, numberOfGuests, name, phone, price } = req.body;
+  const { place, checkIn, checkOut, numberOfGuests, name, phone, price } =
+    req.body;
 
   try {
     const booking = await BookingModel.create({
@@ -259,7 +291,7 @@ app.post("/bookings", authenticateUser, async (req, res) => {
     });
     res.json(booking);
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -270,7 +302,7 @@ app.get("/bookings", authenticateUser, async (req, res) => {
     const bookings = await BookingModel.find({ user: id }).populate("place");
     res.json(bookings);
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
