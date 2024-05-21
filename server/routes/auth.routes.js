@@ -27,7 +27,7 @@ authRouter.get(
         sameSite: "none",
       })
       .status(200)
-      .redirect(`${process.env.FRONTEND_URL}/homepage`);
+      .redirect(`${process.env.FRONTEND_URL}/`);
   }
 );
 
