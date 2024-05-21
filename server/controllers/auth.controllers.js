@@ -1,10 +1,9 @@
-const generateToken = require("../utils/generateToken");
 const validatePassword = require("../utils/validatePassword");
 const UserModel = require("../models/User.js");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-
+const jwt = require("jsonwebtoken");
 passport.use(
   new GoogleStrategy(
     {
@@ -60,10 +59,20 @@ const register = async (req, res) => {
       name,
       mobileNum,
     });
-    res
-      .cookie("token", generateToken(newUser))
-      .status(201)
-      .json({ user: newUser });
+    jwt.sign(
+      { newUser },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "10d",
+      },
+      (err, token) => {
+        if (err) throw err;
+        res
+          .cookie("token", token, { secure: true, sameSite: "none" })
+          .status(201)
+          .json({ user: newUser });
+      }
+    );
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -76,7 +85,20 @@ const login = async (req, res) => {
     if (!user || !bcrypt.compareSync(password, user.password)) {
       return res.status(401).json({ error: "Wrong username or password." });
     }
-    res.cookie("token", generateToken(user).status(200).json({ user }));
+    jwt.sign(
+      { user },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "10d",
+      },
+      (err, token) => {
+        if (err) throw err;
+        res
+          .cookie("token", token, { sameSite: "none", secure: true })
+          .status(200)
+          .json({ user: user });
+      }
+    );
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -99,5 +121,5 @@ const logout = (req, res) => {
 module.exports = {
   register,
   login,
-  logout
+  logout,
 };
