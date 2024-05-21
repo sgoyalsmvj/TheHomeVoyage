@@ -4,7 +4,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import axios from "axios";
 import PlacesPage from "./PlacesPage";
 import AccountNav from "../components/AccountNav";
-
+import { Button } from "@/components/ui/button";
 const ProfilePage = () => {
   const [redirect, setRedirect] = useState(null);
   const { ready, user, setUser } = useContext(UserContext);
@@ -19,7 +19,7 @@ const ProfilePage = () => {
     return <Navigate to={"/login"} />;
   }
   async function logout() {
-    await axios.post("/logout");
+    await axios.get("/logout");
     setRedirect("/");
     setUser(null);
   }
@@ -33,9 +33,9 @@ const ProfilePage = () => {
       {subPage === "profile" && (
         <div className="text-center max-w-lg mx-auto">
           Logged in as {user.name} ({user.email})
-          <button className="primary max-w-sm mt-2" onClick={logout}>
+          <Button className="primary max-w-sm mt-2" onClick={logout}>
             Logout
-          </button>
+          </Button>
         </div>
       )}
       {subPage === "places" && <PlacesPage />}
