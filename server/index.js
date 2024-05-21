@@ -17,7 +17,8 @@ const cookieSession = require("cookie-session");
 const app = express();
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = process.env.JWT_SECRET || "yourSecretKey";
-
+const session = require("express-session");
+const { authenticateUser } = require("./middlewares/auth.middleware.js");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -32,13 +33,13 @@ app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 // Configure cookie session
 app.use(
-  cookieSession({
-    name: "session",
-    keys: [process.env.COOKIE_KEY],
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  session({
+    secret: "somethingsecretgoeshere",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true },
   })
 );
-
 // Initialize Passport and session
 app.use(passport.initialize());
 app.use(passport.session());
@@ -63,20 +64,20 @@ app.use((err, req, res, next) => {
 });
 
 // Authentication Middleware
-const authenticateUser = (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token) {
-    return res.status(401).json({ error: "Unauthorized - No token provided" });
-  }
+// const authenticateUser = (req, res, next) => {
+//   const token = req.cookies.token;
+//   if (!token) {
+//     return res.status(401).json({ error: "Unauthorized - No token provided" });
+//   }
 
-  jwt.verify(token, jwtSecret, (err, userData) => {
-    if (err) {
-      return res.status(401).json({ error: "Unauthorized - Invalid token" });
-    }
-    req.userData = userData;
-    next();
-  });
-};
+//   jwt.verify(token, process.env.JWT_SECRET, (err, userData) => {
+//     if (err) {
+//       return res.status(401).json({ error: err });
+//     }
+//     req.user = userData.user;
+//     next();
+//   });
+// };
 
 app.get("/test", (req, res) => {
   res.json("test ok");
@@ -118,17 +119,21 @@ app.use("/", require("./routes/auth.routes.js"));
 // });
 
 app.get("/profile", authenticateUser, (req, res) => {
+  console.log(req)
   const { id } = req.userData;
   UserModel.findById(id)
     .then((user) =>
       res.json({ name: user.name, email: user.email, id: user._id })
     )
-    .catch((err) => res.status(500).json({ error: "Internal Server Error" }));
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).json({ error: "internal server error" });
+    });
 });
 
-app.post("/logout", (req, res) => {
-  res.cookie("token", "").json(true);
-});
+// app.post("/logout", (req, res) => {
+//   res.cookie("token", "").json(true);
+// });
 
 app.post("/upload-by-link", async (req, res) => {
   const { link } = req.body;

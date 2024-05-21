@@ -1,9 +1,11 @@
-const validatePassword = require("../utils/validatePassword");
-const UserModel = require("../models/User.js");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const jwt = require("jsonwebtoken");
+const UserModel = require("../models/User.js");
+const validatePassword = require("../utils/validatePassword");
+
+// Google OAuth Strategy Configuration
 passport.use(
   new GoogleStrategy(
     {
@@ -15,7 +17,7 @@ passport.use(
       try {
         let user = await UserModel.findOne({ googleId: profile.id });
         if (!user) {
-          const newUser = await UserModel.create({
+          user = await UserModel.create({
             googleId: profile.id,
             email: profile.emails[0].value,
             name: profile.displayName,
@@ -29,9 +31,11 @@ passport.use(
     }
   )
 );
+
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
+
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await UserModel.findById(id);
@@ -40,6 +44,8 @@ passport.deserializeUser(async (id, done) => {
     done(error, null);
   }
 });
+
+// Register User
 const register = async (req, res) => {
   const { email, password, name, mobileNum } = req.body;
   try {
@@ -47,10 +53,10 @@ const register = async (req, res) => {
     if (userExists) {
       return res.status(400).json({ error: "Email already exists" });
     }
-    if (validatePassword(password) === false) {
+    if (!validatePassword(password)) {
       return res.status(400).json({
         error:
-          "Password should contain letters, symbols and numbers. Length should be atleast 6.",
+          "Password should contain letters, symbols, and numbers. Length should be at least 6.",
       });
     }
     const newUser = await UserModel.create({
@@ -59,25 +65,21 @@ const register = async (req, res) => {
       name,
       mobileNum,
     });
-    jwt.sign(
-      { newUser },
+    const token = jwt.sign(
+      { id: newUser._id, email: newUser.email, name: newUser.name },
       process.env.JWT_SECRET,
-      {
-        expiresIn: "10d",
-      },
-      (err, token) => {
-        if (err) throw err;
-        res
-          .cookie("token", token, { secure: true, sameSite: "none" })
-          .status(201)
-          .json({ user: newUser });
-      }
+      { expiresIn: "10d" }
     );
+    res
+      .cookie("token", token, { secure: true, sameSite: "none" })
+      .status(201)
+      .json({ user: newUser });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
+// Login User
 const login = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -85,26 +87,22 @@ const login = async (req, res) => {
     if (!user || !bcrypt.compareSync(password, user.password)) {
       return res.status(401).json({ error: "Wrong username or password." });
     }
-    jwt.sign(
-      { user },
+    const token = jwt.sign(
+      { id: user._id, email: user.email, name: user.name },
       process.env.JWT_SECRET,
-      {
-        expiresIn: "10d",
-      },
-      (err, token) => {
-        if (err) throw err;
-        res
-          .cookie("token", token, { sameSite: "none", secure: true })
-          .status(200)
-          .json({ user: user });
-      }
+      { expiresIn: "10d" }
     );
+    res
+      .cookie("token", token, { secure: true, sameSite: "none" })
+      .status(200)
+      .json({ user });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
+// Logout User
 const logout = (req, res) => {
   req.logout((err) => {
     if (err) {
@@ -118,8 +116,31 @@ const logout = (req, res) => {
     res.status(200).json({ message: "Successfully logged out" });
   });
 };
+
+const googleAuth = (req, res) => {
+  try {
+    jwt.sign(
+      { id: req.user._id, email: req.user.email, name: req.user.name },
+      process.env.JWT_SECRET,
+      { expiresIn: "10d" },
+      (err, token) => {
+        if (err) throw err;
+        res
+          .cookie("token", token, {
+            secure: true,
+            sameSite: "none",
+          })
+          .status(200)
+          .redirect(`${process.env.FRONTEND_URL}/`);
+      }
+    );
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 module.exports = {
   register,
   login,
   logout,
+  googleAuth,
 };
