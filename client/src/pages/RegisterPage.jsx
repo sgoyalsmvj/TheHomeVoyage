@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -19,30 +21,40 @@ const RegisterPage = () => {
       alert("Registration Failed! Try Again later.");
     }
   }
+  async function handleGoogleLogin(ev) {
+    ev.preventDefault();
+    window.location.href = `${import.meta.env.VITE_BASEURL}/google`;
+  }
   return (
     <div className="mt-4 grow flex items-center justify-around ">
       <div className="-mb-128 ">
         <h1 className="text-4xl text-center mb-4">Register</h1>
-        <form className="max-w-md mx-auto" onSubmit={registerUser}>
-          <input
+        <form className="max-w-md w-[300px] mx-auto " onSubmit={registerUser}>
+          <Input
             type="text"
-            placeholder="John Doe"
+            placeholder="Name"
+            className="mb-2"
             value={name}
             onChange={(ev) => setName(ev.target.value)}
           />
-          <input
+          <Input
             type="email"
-            placeholder="your@email.com"
+            placeholder="Email"
+            className="mb-2"
             value={email}
             onChange={(ev) => setEmail(ev.target.value)}
           />
-          <input
+          <Input
             type="password"
-            placeholder="password"
+            placeholder="Password"
+            className="mb-2"
             value={password}
             onChange={(ev) => setPassword(ev.target.value)}
           />
-          <button className="primary">Register</button>
+          <Button className="primary w-full mb-2">Register</Button>
+          <Button onClick={handleGoogleLogin} className="bg-red-600 w-full">
+            Sign in with GOOGLE
+          </Button>
           <div className="text-center py-2 text-gray-500">
             Already A member?
             <Link className="underline text-black" to={"/login"}>
