@@ -6,7 +6,7 @@ import PlacesPage from "./PlacesPage";
 import AccountNav from "../components/AccountNav";
 import { Button } from "@/components/ui/button";
 const ProfilePage = () => {
-  const [redirect, setRedirect] = useState(null);
+  const [redirect, setRedirect] = useState(false);
   const { ready, user, setUser } = useContext(UserContext);
   let { subPage } = useParams();
   if (subPage === undefined) {
@@ -20,20 +20,20 @@ const ProfilePage = () => {
   }
   async function logout() {
     await axios.get("/logout");
-    setRedirect("/");
+    setRedirect(true);
     setUser(null);
   }
   if (redirect) {
-    return <Navigate to={redirect} />;
+    return <Navigate to={'/'} />;
   }
   
   return (
     <div>
      <AccountNav/>  
       {subPage === "profile" && (
-        <div className="text-center max-w-lg mx-auto">
+        <div className="text-center max-w-lg mx-auto flex flex-col items-center justify-center">
           Logged in as {user.name} ({user.email})
-          <Button className="primary max-w-sm mt-2" onClick={logout}>
+          <Button className="primary max-w-sm mt-4" onClick={logout}>
             Logout
           </Button>
         </div>
