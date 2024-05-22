@@ -14,7 +14,7 @@ const Perks = ({ selected, onChange }) => {
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer ">
         <input
           type="checkbox"
-          checked={selected.includes("Free Parking Spot")}
+          checked={selected?.includes("Free Parking Spot")}
           name="Free Parking Spot"
           onChange={handleCbClick}
         />
@@ -38,7 +38,7 @@ const Perks = ({ selected, onChange }) => {
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer ">
         <input
           type="checkbox"
-          checked={selected.includes("wifi")}
+          checked={selected?.includes("wifi")}
           name="wifi"
           onChange={handleCbClick}
         />
@@ -62,7 +62,7 @@ const Perks = ({ selected, onChange }) => {
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer ">
         <input
           type="checkbox"
-          checked={selected.includes("TV")}
+          checked={selected?.includes("TV")}
           name="TV"
           onChange={handleCbClick}
         />
@@ -86,7 +86,7 @@ const Perks = ({ selected, onChange }) => {
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer ">
         <input
           type="checkbox"
-          checked={selected.includes("Pets")}
+          checked={selected?.includes("Pets")}
           name="Pets"
           onChange={handleCbClick}
         />
@@ -110,7 +110,7 @@ const Perks = ({ selected, onChange }) => {
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer ">
         <input
           type="checkbox"
-          checked={selected.includes("Private Entrance")}
+          checked={selected?.includes("Private Entrance")}
           name="Private Entrance"
           onChange={handleCbClick}
         />
@@ -134,7 +134,7 @@ const Perks = ({ selected, onChange }) => {
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
         <input
           type="checkbox"
-          checked={selected.includes("Breakfast")}
+          checked={selected?.includes("Breakfast")}
           name="Breakfast"
           onChange={handleCbClick}
         />

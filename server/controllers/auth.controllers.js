@@ -134,9 +134,22 @@ const googleAuth = (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+const getProfile = async (req, res) => {
+  const { id } = req.userData;
+  UserModel.findById(id)
+    .then((user) =>
+      res.json({ name: user.name, email: user.email, id: user._id })
+    )
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).json({ error: "internal server error" });
+    });
+};
 module.exports = {
   register,
   login,
   logout,
   googleAuth,
+  getProfile,
 };
