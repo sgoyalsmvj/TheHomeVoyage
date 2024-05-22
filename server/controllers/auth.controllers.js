@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const UserModel = require("../models/User.js");
+const UserModel = require("../models/User");
 const validatePassword = require("../utils/validatePassword");
 
 // Google OAuth Strategy Configuration

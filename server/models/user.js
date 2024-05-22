@@ -17,9 +17,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  mobileNum: {
-    type: String,
-  }
 });
 
 const UserModel = mongoose.model('User', userSchema);
