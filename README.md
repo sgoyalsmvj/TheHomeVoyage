@@ -39,29 +39,24 @@ TheHomeVoyage is a project that guides you through the process of building a ful
 
 ## Authentication Feature
 
-### Overview
-
-This project includes a robust authentication system supporting user registration, login, logout, and Google OAuth. The system ensures secure and seamless user management.
-
 ### Backend
 
-- **User Model**: Stores user details (email, hashed password, Google ID, name) using MongoDB.
+- **User Model**:
+  Stores user details (email, hashed password, Google ID, name) using MongoDB.
 
 - **Routes**:
   - **Register**: Validates and registers new users. Hashes passwords before storing them.
   - **Login**: Authenticates users and issues JWT tokens.
   - **Logout**: Clears the authentication token.
   - **Google OAuth**: Uses Passport.js to handle Google sign-ins and account creation for new users.
-
-- **Middleware**:
-  - `validatePassword`: Ensures that passwords meet certain criteria (length, inclusion of letters, symbols, and numbers).
-  - `authenticateUser`:Protects routes by ensuring the presence and validity of a JWT token.
+  - **User Profile**: Retrieves user profile information for authenticated users.
 
 ### Frontend
 
 - **User Context**: Manages and provides user state across the application using React Context API.
 
 - **Login Page**:
+
   - Supports email/password and Google login.
   - Updates user context and redirects upon successful login.
   - Displays error messages for failed login attempts.
@@ -70,9 +65,29 @@ This project includes a robust authentication system supporting user registratio
   - Registers new users and handles errors.
   - Supports Google OAuth for registration.
 
+## Places Management
 
+### Backend
+
+- **Place Model**: Stores place details (owner, title, address, photos, description, perks, extra info, check-in/check-out times, max guests, price).
+
+- **Routes**:
+  - **Get All Places**: Fetches all listed places.
+  - **Get Place**: Fetches a single place by ID.
+  - **Add Place**: Allows authenticated users to add new places.
+  - **Edit Place**: Allows owners to edit their places.
+  - **Delete Place**: Allows owners to delete their places.
+  - **User Places**: Fetches all places owned by the authenticated user.
+
+### Frontend
+
+- **PlacesFormPage**: A reusable form component for adding and editing places.
+
+  - Pre-fills form fields when editing a place.
+  - Handles form submission for both adding and editing places.
+
+- **Place List and Details**: Displays a list of all available places and detailed information for each place.
 
 ## Contributing
 
 Contributions are welcome! Feel free to submit issues, feature requests, or pull requests.
-
