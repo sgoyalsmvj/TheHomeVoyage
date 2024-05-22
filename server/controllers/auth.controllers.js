@@ -108,11 +108,7 @@ const logout = (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Failed to logout" });
     }
-    res.clearCookie("token", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "Strict",
-    });
+    res.clearCookie("token", " ", { secure: true, sameSite: "none" });
     res.status(200).json({ message: "Successfully logged out" });
   });
 };
