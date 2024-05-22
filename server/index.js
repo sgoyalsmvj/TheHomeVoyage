@@ -84,6 +84,7 @@ app.get("/test", (req, res) => {
 });
 
 app.use("/", require("./routes/auth.routes.js"));
+app.use("/", require("./routes/place.routes.js"));
 
 // app.post("/register", async (req, res) => {
 //   const { name, email, password } = req.body;
@@ -118,18 +119,17 @@ app.use("/", require("./routes/auth.routes.js"));
 //   );
 // });
 
-app.get("/profile", authenticateUser, (req, res) => {
-  console.log(req)
-  const { id } = req.userData;
-  UserModel.findById(id)
-    .then((user) =>
-      res.json({ name: user.name, email: user.email, id: user._id })
-    )
-    .catch((err) => {
-      console.error(err);
-      return res.status(500).json({ error: "internal server error" });
-    });
-});
+// app.get("/profile", authenticateUser, (req, res) => {
+//   const { id } = req.userData;
+//   UserModel.findById(id)
+//     .then((user) =>
+//       res.json({ name: user.name, email: user.email, id: user._id })
+//     )
+//     .catch((err) => {
+//       console.error(err);
+//       return res.status(500).json({ error: "internal server error" });
+//     });
+// });
 
 // app.post("/logout", (req, res) => {
 //   res.cookie("token", "").json(true);
@@ -170,113 +170,113 @@ app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
   res.json(uploadedFiles);
 });
 
-app.post("/places", authenticateUser, async (req, res) => {
-  const { id } = req.userData;
-  const {
-    title,
-    address,
-    addedPhotos,
-    description,
-    perks,
-    extraInfo,
-    checkIn,
-    checkOut,
-    maxGuests,
-    price,
-  } = req.body;
+// app.post("/places", authenticateUser, async (req, res) => {
+//   const { id } = req.userData;
+//   const {
+//     title,
+//     address,
+//     addedPhotos,
+//     description,
+//     perks,
+//     extraInfo,
+//     checkIn,
+//     checkOut,
+//     maxGuests,
+//     price,
+//   } = req.body;
 
-  try {
-    const placeData = await PlaceModel.create({
-      owner: id,
-      title,
-      address,
-      photos: addedPhotos,
-      description,
-      perks,
-      extraInfo,
-      checkIn,
-      checkOut,
-      maxGuests,
-      price,
-    });
-    res.json(placeData);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+//   try {
+//     const placeData = await PlaceModel.create({
+//       owner: id,
+//       title,
+//       address,
+//       photos: addedPhotos,
+//       description,
+//       perks,
+//       extraInfo,
+//       checkIn,
+//       checkOut,
+//       maxGuests,
+//       price,
+//     });
+//     res.json(placeData);
+//   } catch (error) {
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
 
-app.get("/user-places", authenticateUser, (req, res) => {
-  const { id } = req.userData;
+// app.get("/user-places", authenticateUser, (req, res) => {
+//   const { id } = req.userData;
 
-  PlaceModel.find({ owner: id })
-    .then((places) => res.json(places))
-    .catch((err) => res.status(500).json({ error: "Internal Server Error" }));
-});
+//   PlaceModel.find({ owner: id })
+//     .then((places) => res.json(places))
+//     .catch((err) => res.status(500).json({ error: "Internal Server Error" }));
+// });
 
-app.get("/places/:id", async (req, res) => {
-  const { id } = req.params;
+// app.get("/places/:id", async (req, res) => {
+//   const { id } = req.params;
 
-  try {
-    const place = await PlaceModel.findById(id);
-    if (!place) {
-      return res.status(404).json({ error: "Place not found" });
-    }
-    res.json(place);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+//   try {
+//     const place = await PlaceModel.findById(id);
+//     if (!place) {
+//       return res.status(404).json({ error: "Place not found" });
+//     }
+//     res.json(place);
+//   } catch (error) {
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
 
-app.put("/user-places", authenticateUser, async (req, res) => {
-  const {
-    id,
-    title,
-    address,
-    addedPhotos,
-    description,
-    perks,
-    extraInfo,
-    checkIn,
-    checkOut,
-    maxGuests,
-    price,
-  } = req.body;
+// app.put("/user-places", authenticateUser, async (req, res) => {
+//   const {
+//     id,
+//     title,
+//     address,
+//     addedPhotos,
+//     description,
+//     perks,
+//     extraInfo,
+//     checkIn,
+//     checkOut,
+//     maxGuests,
+//     price,
+//   } = req.body;
 
-  try {
-    const placeDoc = await PlaceModel.findById(id);
+//   try {
+//     const placeDoc = await PlaceModel.findById(id);
 
-    if (!placeDoc || req.userData.id !== placeDoc.owner.toString()) {
-      return res.status(403).json({ error: "Forbidden" });
-    }
+//     if (!placeDoc || req.userData.id !== placeDoc.owner.toString()) {
+//       return res.status(403).json({ error: "Forbidden" });
+//     }
 
-    placeDoc.set({
-      title,
-      address,
-      photos: addedPhotos,
-      description,
-      perks,
-      extraInfo,
-      checkIn,
-      checkOut,
-      maxGuests,
-      price,
-    });
+//     placeDoc.set({
+//       title,
+//       address,
+//       photos: addedPhotos,
+//       description,
+//       perks,
+//       extraInfo,
+//       checkIn,
+//       checkOut,
+//       maxGuests,
+//       price,
+//     });
 
-    await placeDoc.save();
-    res.json("ok");
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+//     await placeDoc.save();
+//     res.json("ok");
+//   } catch (error) {
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
 
-app.get("/places", async (req, res) => {
-  try {
-    const places = await PlaceModel.find();
-    res.json(places);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+// app.get("/places", async (req, res) => {
+//   try {
+//     const places = await PlaceModel.find();
+//     res.json(places);
+//   } catch (error) {
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
 
 app.post("/bookings", authenticateUser, async (req, res) => {
   const { id } = req.userData;

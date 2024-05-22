@@ -28,4 +28,5 @@ const authenticateUser = (req, res, next) => {
   });
 };
 
+
 module.exports = { validateFrontendUrl, googleAuthCallback, authenticateUser };

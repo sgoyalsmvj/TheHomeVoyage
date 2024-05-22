@@ -5,15 +5,16 @@ const {
   login,
   logout,
   googleAuth,
+  getProfile,
 } = require("../controllers/auth.controllers");
-const { googleAuthCallback } = require("../middlewares/auth.middleware");
+const { googleAuthCallback, authenticateUser } = require("../middlewares/auth.middleware");
 const jwt = require("jsonwebtoken");
 const authRouter = express.Router();
 
 authRouter.post("/register", register);
 authRouter.post("/login", login);
 authRouter.get("/logout", logout);
-
+authRouter.get("/profile",authenticateUser, getProfile);
 // Google OAuth Routes
 authRouter.get(
   "/google",
