@@ -85,7 +85,7 @@ app.get("/test", (req, res) => {
 
 app.use("/", require("./routes/auth.routes.js"));
 app.use("/", require("./routes/place.routes.js"));
-
+app.use('/', require('./routes/upload.routes.js'));
 // app.post("/register", async (req, res) => {
 //   const { name, email, password } = req.body;
 //   try {
@@ -135,40 +135,40 @@ app.use("/", require("./routes/place.routes.js"));
 //   res.cookie("token", "").json(true);
 // });
 
-app.post("/upload-by-link", async (req, res) => {
-  const { link } = req.body;
-  const newName = "photo" + Date.now() + ".jpg";
+// app.post("/upload-by-link", async (req, res) => {
+//   const { link } = req.body;
+//   const newName = "photo" + Date.now() + ".jpg";
 
-  try {
-    await imageDownloader.image({
-      url: link,
-      dest: __dirname + "/uploads/" + newName,
-    });
-    console.log(__dirname + "/uploads/" + newName);
-    res.json(newName);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+//   try {
+//     await imageDownloader.image({
+//       url: link,
+//       dest: __dirname + "/uploads/" + newName,
+//     });
+//     console.log(__dirname + "/uploads/" + newName);
+//     res.json(newName);
+//   } catch (error) {
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
 
-const photosMiddleware = multer({ dest: "uploads/" });
+// const photosMiddleware = multer({ dest: "uploads/" });
 
-app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
-  const uploadedFiles = [];
+// app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
+//   const uploadedFiles = [];
 
-  for (let i = 0; i < req.files.length; i++) {
-    const { path, originalname } = req.files[i];
-    const parts = originalname.split(".");
-    const ext = parts[parts.length - 1];
+//   for (let i = 0; i < req.files.length; i++) {
+//     const { path, originalname } = req.files[i];
+//     const parts = originalname.split(".");
+//     const ext = parts[parts.length - 1];
 
-    const newPath = path + "." + ext;
-    fs.renameSync(path, newPath);
-    console.log(newPath);
-    uploadedFiles.push(newPath.replace("uploads\\", ""));
-  }
+//     const newPath = path + "." + ext;
+//     fs.renameSync(path, newPath);
+//     console.log(newPath);
+//     uploadedFiles.push(newPath.replace("uploads\\", ""));
+//   }
 
-  res.json(uploadedFiles);
-});
+//   res.json(uploadedFiles);
+// });
 
 // app.post("/places", authenticateUser, async (req, res) => {
 //   const { id } = req.userData;

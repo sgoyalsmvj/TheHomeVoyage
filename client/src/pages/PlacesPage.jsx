@@ -35,8 +35,8 @@ export default function PlacesPage() {
       </div>
       <div className="mt-4">
         {places.length > 0 &&
-          places.map((place) => (
-            <>
+          places.map((place,index) => (
+            <div key={index}>
               <div className="flex cursor-pointer gap-4 bg-gray-100 p-4 m-4 rounded-xl shadow-sm shadow-gray-300">
                 <div className=" w-32  grow shrink-0">
                   <PlaceImg place={place} />
@@ -49,7 +49,7 @@ export default function PlacesPage() {
                   <button>Edit</button>
                 </Link>
               </div>
-            </>
+            </div>
           ))}
       </div>
     </div>
