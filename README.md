@@ -1,17 +1,17 @@
-# TheHomeVoyage - MERN Booking App
+# The HomeVoyage
 
-This repository contains the source code for a full-stack booking app named HomeVoyage, built using the MERN stack (MongoDB, Express.js, React, Node.js). The app allow users to create accounts, list places for rent, and make bookings.
+This repository contains the source code for a full-stack booking app named HomeVoyage, built using the MERN stack (MongoDB, Express.js, React, Node.js). The app allows users to create accounts, list places for rent, and make bookings.
 
 ## Introduction
 
-TheHomeVoyage is a project that guides you through the process of building a full-stack booking system app using the MERN stack. It covers the development of key features such as user authentication, listing places, uploading photos, managing bookings, and more.
+The HomeVoyage is a project that guides you through the process of building a full-stack booking system app using the MERN stack. It covers the development of key features such as user authentication, listing places, uploading photos, managing bookings, and more.
 
 ## Features
 
-- User authentication (Login, Register and Google Oauth)
+- User authentication (Login, Register, and Google OAuth)
 - Account management
 - Listing places/accommodations
-- Uploading photos from a device or a link
+- Uploading photos from a device or a link (Amazon S3)
 - Editing and deleting existing places
 - Homepage with a list of available places
 - Single place page with details
@@ -79,6 +79,10 @@ TheHomeVoyage is a project that guides you through the process of building a ful
   - **Delete Place**: Allows owners to delete their places.
   - **User Places**: Fetches all places owned by the authenticated user.
 
+- **Image Deletion**:
+  - Ensures that images are deleted from the S3 bucket if the wrong image is uploaded.
+  - Deletes images of a place from the S3 bucket when deleting the place from the database.
+
 ### Frontend
 
 - **PlacesFormPage**: A reusable form component for adding and editing places.
@@ -87,6 +91,26 @@ TheHomeVoyage is a project that guides you through the process of building a ful
   - Handles form submission for both adding and editing places.
 
 - **Place List and Details**: Displays a list of all available places and detailed information for each place.
+
+## Photo Uploading Feature
+
+### Backend
+
+- **Upload Controllers**:
+  - Implemented endpoints for uploading photos both from a device and from a link.
+  - Utilized AWS S3 for storing uploaded photos.
+
+- **Upload Router**:
+  - Created routes for handling photo upload requests.
+
+### Frontend
+
+- **PhotoUploader Component**: 
+  - Added functionality to upload photos both by link and by file upload.
+  - Implemented a function to remove photos.
+  - Implemented a function to select a main photo.
+  - Displayed uploaded photos with options to remove and set as the main photo.
+  - Used Axios for making API requests to upload and delete photos.
 
 ## Contributing
 
