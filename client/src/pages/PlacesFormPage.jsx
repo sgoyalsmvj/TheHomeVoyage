@@ -23,41 +23,25 @@ const PlacesFormPage = () => {
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
+    console.log(photos);
     if (!id) {
       return;
     }
     axios.get(`/places/${id}`).then((response) => {
-      const  data  = response.data.place;
-      
-      setTitle(data.title);
-      setAddress(data.address);
-      setPhotos(data.photos);
-      setDescription(data.description);
-      setPerks(data.perks);
-      setExtraInfo(data.extraInfo);
-      setCheckIn(data.checkIn);
-      setCheckOut(data.checkOut);
-      setMaxGuests(data.maxGuests);
-      setPrice(data.price);
+      const { data } = response;
+      console.log(data);
+      setTitle(data.place.title);
+      setAddress(data.place.address);
+      setPhotos(data.place.photos);
+      setDescription(data.place.description);
+      setPerks(data.place.perks);
+      setExtraInfo(data.place.extraInfo);
+      setCheckIn(data.place.checkIn);
+      setCheckOut(data.place.checkOut);
+      setMaxGuests(data.place.maxGuests);
+      setPrice(data.place.price);
     });
   }, [id]);
-
-  function inputHeader(text) {
-    return <h2 className="text-2xl mt-4">{text}</h2>;
-  }
-
-  function inputDescription(text) {
-    return <p className="text-gray-500 text-sm mb-2">{text}</p>;
-  }
-
-  function preInput(header, description) {
-    return (
-      <>
-        {inputHeader(header)}
-        {inputDescription(description)}
-      </>
-    );
-  }
 
   async function handleDelete(ev) {
     ev.preventDefault();
@@ -68,6 +52,7 @@ const PlacesFormPage = () => {
       console.error("Error deleting place:", error);
     }
   }
+
   async function savePlace(ev) {
     ev.preventDefault();
     const placeData = {
@@ -85,7 +70,7 @@ const PlacesFormPage = () => {
     try {
       if (id) {
         // Update existing place
-        await axios.put(`/places/${id}`, {...placeData});
+        await axios.put(`/places/${id}`, placeData);
       } else {
         // Create new place
         await axios.post("/places", placeData);
@@ -104,43 +89,64 @@ const PlacesFormPage = () => {
     <div>
       <AccountNav />
       <form onSubmit={savePlace}>
-        {preInput(
-          "Title",
-          "Title for your place. should be short and catchy as in advertisement"
-        )}
+        {/* Title */}
+        <h2 className="text-2xl mt-4">Title</h2>
+        <p className="text-gray-500 text-sm mb-2">
+          Title for your place. Should be short and catchy as in advertisement.
+        </p>
         <Input
           type="text"
           value={title}
           onChange={(ev) => setTitle(ev.target.value)}
-          placeholder="title, for example: My lovely apt"
+          placeholder="Title, for example: My lovely apt"
         />
-        {preInput("Address", "Address to this place")}
+
+        {/* Address */}
+        <h2 className="text-2xl mt-4">Address</h2>
+        <p className="text-gray-500 text-sm mb-2">Address to this place.</p>
         <Input
           type="text"
           value={address}
           onChange={(ev) => setAddress(ev.target.value)}
-          placeholder="address"
+          placeholder="Address"
         />
-        {preInput("Photos", "more = better")}
+
+        {/* Photos */}
+        <h2 className="text-2xl mt-4">Photos</h2>
+        <p className="text-gray-500 text-sm mb-2">More photos = better.</p>
         <PhotoUploader photos={photos} onChange={setPhotos} />
-        {preInput("Description", "description of the place")}
+
+        {/* Description */}
+        <h2 className="text-2xl mt-4">Description</h2>
+        <p className="text-gray-500 text-sm mb-2">Description of the place.</p>
         <Textarea
           value={description}
           onChange={(ev) => setDescription(ev.target.value)}
         />
-        {preInput("Perks", "select all the perks of your place")}
+
+        {/* Perks */}
+        <h2 className="text-2xl mt-4">Perks</h2>
+        <p className="text-gray-500 text-sm mb-2">
+          Select all the perks of your place.
+        </p>
         <div className="grid mt-2 gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           <Perks selected={perks} onChange={setPerks} />
         </div>
-        {preInput("Extra info", "house rules, etc")}
+
+        {/* Extra info */}
+        <h2 className="text-2xl mt-4">Extra Info</h2>
+        <p className="text-gray-500 text-sm mb-2">House rules, etc.</p>
         <Textarea
           value={extraInfo}
           onChange={(ev) => setExtraInfo(ev.target.value)}
         />
-        {preInput(
-          "Check in&out times",
-          "add check in and out times, remember to have some time window for cleaning the room between guests"
-        )}
+
+        {/* Check in/out times */}
+        <h2 className="text-2xl mt-4">Check in & out times</h2>
+        <p className="text-gray-500 text-sm mb-2">
+          Add check-in and check-out times. Remember to have some time window
+          for cleaning the room between guests.
+        </p>
         <div className="grid gap-2 grid-cols-2 md:grid-cols-4">
           <div>
             <h3 className="mt-2 -mb-1">Check in time</h3>
@@ -177,11 +183,14 @@ const PlacesFormPage = () => {
             />
           </div>
         </div>
+
+        {/* Save and Delete Buttons */}
         <Button className="primary my-4">Save</Button>
         {id && (
-                <Button className="ml-2"
-                 variant="destructive" onClick={handleDelete}>Delete</Button>
-              )}
+          <Button className="ml-2" variant="destructive" onClick={handleDelete}>
+            Delete
+          </Button>
+        )}
       </form>
     </div>
   );

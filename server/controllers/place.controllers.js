@@ -1,4 +1,5 @@
 const PlaceModel = require("../models/Place");
+const { s3 } = require("./upload.controllers");
 
 const getAllPlaces = async (req, res) => {
   try {
@@ -124,7 +125,16 @@ const deletePlace = async (req, res) => {
         .status(403)
         .json({ error: "Forbidden: You are not the owner of this place" });
     }
-
+    const images = place.photos;
+    images.forEach(async (element) => {
+      let name = element.split("/");
+      name = name[3];
+      const params = {
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: name,
+      };
+      await s3.deleteObject(params).promise();
+    });
     await place.deleteOne();
     res.status(204).json({ message: "Place deleted" });
   } catch (error) {
@@ -145,4 +155,11 @@ const userPlaces = async (req, res) => {
   }
 };
 
-module.exports = { getAllPlaces, getPlace, addPlace, editPlace, deletePlace,userPlaces };
+module.exports = {
+  getAllPlaces,
+  getPlace,
+  addPlace,
+  editPlace,
+  deletePlace,
+  userPlaces,
+};

@@ -3,43 +3,62 @@ import React, { useState } from "react";
 import Image from "./Image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-export const PhotoUploader = ({ addedPhotos, onChange }) => {
+
+export const PhotoUploader = ({ photos, onChange }) => {
   const [photoLink, setPhotoLink] = useState("");
+
   async function addPhotoByLink(ev) {
     ev.preventDefault();
-    const { data: filename } = await axios.post("/upload-by-link", {
-      link: photoLink,
-    });
-    onChange((prev) => {
-      return [...prev, filename];
-    });
-    setPhotoLink("");
+    try {
+      const data = await axios.post("/upload-by-link", {
+        link: photoLink,
+      });
+      console.log(data.data.url);
+      onChange((prev) => {
+        console.log({ prev });
+        return [...prev, data.data.url];
+      });
+      setPhotoLink("");
+    } catch (error) {
+      console.error("Error uploading photo by link:", error);
+    }
   }
-  function uploadPhoto(ev) {
+
+  async function uploadPhoto(ev) {
     const files = ev.target.files;
     const data = new FormData();
     for (let i = 0; i < files.length; i++) {
       data.append("photos", files[i]);
     }
-    axios
-      .post("/upload", data, {
+    try {
+      const response = await axios.post("/upload", data, {
         headers: { "Content-type": "multipart/form-data" },
-      })
-      .then((response) => {
-        const { data: filenames } = response;
-        onChange((prev) => {
-          return [...prev, ...filenames];
-        });
       });
+      // console.log(response.data)
+      const urls = response.data.urls;
+      onChange((prev) => [...prev, ...urls]);
+    } catch (error) {
+      console.error("Error uploading photo:", error);
+    }
   }
-  function removePhoto(ev, filename) {
+
+  async function removePhoto(ev, filename) {
     ev.preventDefault();
-    onChange([...addedPhotos.filter((photo) => photo !== filename)]);
+    try {
+      let name = filename.split("/");
+      name = name[3];
+      const res = await axios.delete(`/photos/${name}`);
+      onChange(photos.filter((photo) => photo !== filename));
+    } catch (error) {
+      console.error("Error deleting photo:", error);
+    }
   }
+
   function selectAsMainPhoto(ev, filename) {
     ev.preventDefault();
-    onChange([filename, ...addedPhotos.filter((photo) => photo !== filename)]);
+    onChange([filename, ...photos.filter((photo) => photo !== filename)]);
   }
+
   return (
     <>
       <div className="flex gap-2">
@@ -49,15 +68,15 @@ export const PhotoUploader = ({ addedPhotos, onChange }) => {
           type="text"
           placeholder={"Add using a link ....jpg"}
         />
-        <Button onClick={addPhotoByLink} className=" px-4 rounded-xl">
+        <Button onClick={addPhotoByLink} className="px-4 rounded-xl">
           Add&nbsp;photo
         </Button>
       </div>
       <div className="mt-2 grid gap-2 grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-        {addedPhotos?.length >= 0 &&
-          addedPhotos.map((link) => (
+        {photos?.length > 0 &&
+          photos.map((link) => (
             <div className="h-32 flex relative" key={link}>
-              <Image
+              <img
                 className="rounded-2xl w-full object-cover"
                 src={link}
                 alt={link}
@@ -85,9 +104,9 @@ export const PhotoUploader = ({ addedPhotos, onChange }) => {
               <Button
                 variant="secondary"
                 onClick={(ev) => selectAsMainPhoto(ev, link)}
-                className="cursor-pointer absolute bottom-1 left-1 text-gray-400  rounded-2xl py-2 px-3"
+                className="cursor-pointer absolute bottom-1 left-1 text-gray-400 rounded-2xl py-2 px-3"
               >
-                {link === addedPhotos[0] && (
+                {link === photos[0] && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -101,7 +120,7 @@ export const PhotoUploader = ({ addedPhotos, onChange }) => {
                     />
                   </svg>
                 )}
-                {link !== addedPhotos[0] && (
+                {link !== photos[0] && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
