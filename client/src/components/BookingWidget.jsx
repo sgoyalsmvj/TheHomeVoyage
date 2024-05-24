@@ -3,7 +3,6 @@ import { differenceInCalendarDays } from "date-fns";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 import { UserContext } from "../userContext";
-import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 export default function BookingWidget({ place }) {
   const [checkIn, setCheckIn] = useState("");
@@ -102,14 +101,14 @@ export default function BookingWidget({ place }) {
           </div>
         )}
       </div>
-      <Button onClick={bookThisPlace} className="primary mt-4 ml-4">
+      <button onClick={bookThisPlace} className="h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 primary mt-4 ml-4 rounded-md">
         Book this place
         {numberOfNights > 0 && (
           <span>
             ${numberOfNights * place.price}
           </span>
         )}
-      </Button>
+      </button>
     </div>
   );
 }
