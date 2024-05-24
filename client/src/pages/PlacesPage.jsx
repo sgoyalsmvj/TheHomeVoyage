@@ -3,7 +3,7 @@ import AccountNav from "../components/AccountNav";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import PlaceImg from "../components/PlaceImg";
-import { Button } from "@/components/ui/Button";
+// import { Button } from "@/components/ui/button";
 export default function PlacesPage() {
   const [places, setPlaces] = useState([]);
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function PlacesPage() {
                   <p className="text-md mt-2">{place.description}</p>
                 </div>
                 <Link to={"/account/places/" + place._id}>
-                  <Button>Edit</Button>
+                  <button className="h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90">Edit</button>
                 </Link>
               </div>
             </div>
