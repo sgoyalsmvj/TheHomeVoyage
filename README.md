@@ -112,6 +112,18 @@ The HomeVoyage is a project that guides you through the process of building a fu
   - Displayed uploaded photos with options to remove and set as the main photo.
   - Used Axios for making API requests to upload and delete photos.
 
+### Place Page and Gallery
+
+- **PlacePage Component**: 
+  - Displays detailed information about a selected place, including title, address, description, check-in/check-out times, max guests, and extra info.
+  - Utilizes the `PlaceGallery` component to show the photos of the place.
+  - Uses the `BookingWidget` component for booking the place.
+
+- **PlaceGallery Component**: 
+  - Displays the first five photos of a place in a grid layout.
+  - Provides an option to view all photos in a full-screen modal.
+  - Photos are displayed in a specific layout: the first photo takes up two rows, and the next four photos each occupy one row and one column.
+
 ## Contributing
 
 Contributions are welcome! Feel free to submit issues, feature requests, or pull requests.
