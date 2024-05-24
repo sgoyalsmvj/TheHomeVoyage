@@ -2,14 +2,14 @@ import React from "react";
 
 const AddressLink = ({children,className=null}) => {
     if(!className){
-        className =' my-3 block'
+        className =' my-3 '
     }
     className+="flex gap-1 my-2 font-semibold underline"
   return (
     <a
       className={className}
       target="_blank"
-      href={"hhtps://maps.google.com.?q=" + children}
+      href={"https://maps.google.com.?q=" + children}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +17,7 @@ const AddressLink = ({children,className=null}) => {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6"
+        className="w-6 h-6 ml-3"
       >
         <path
           strokeLinecap="round"

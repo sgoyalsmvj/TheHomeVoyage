@@ -62,7 +62,7 @@ const register = async (req, res) => {
     const newUser = await UserModel.create({
       email,
       password: bcrypt.hashSync(password, 10),
-      name,
+      name:name.toUpperCase(),
       mobileNum,
     });
     const token = jwt.sign(

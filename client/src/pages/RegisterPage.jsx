@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -8,6 +8,8 @@ const RegisterPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [redirect, setRedirect] = useState(""); 
+  const {user} = useContext(UserContext);
   async function registerUser(ev) {
     ev.preventDefault();
     try {
@@ -17,6 +19,7 @@ const RegisterPage = () => {
         password,
       });
       alert("registration successful!");
+      setRedirect("/") // Redirect to the home page
     } catch (error) {
       alert("Registration Failed! Try Again later.");
     }
@@ -24,6 +27,9 @@ const RegisterPage = () => {
   async function handleGoogleLogin(ev) {
     ev.preventDefault();
     window.location.href = `${import.meta.env.VITE_BASEURL}/google`;
+  }
+  if(redirect){
+    return <Navigate to={redirect} />
   }
   return (
     <div className="mt-4 grow flex items-center justify-around ">

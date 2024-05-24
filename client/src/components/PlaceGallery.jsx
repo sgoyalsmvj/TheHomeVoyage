@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 
 const PlaceGallery = ({ place }) => {
+  // console.log(place.photos)
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   if (showAllPhotos) {
     return (
       <div className=" absolute inset-0 bg-black text-white  min-h-screen">
-        <div className="p-8 grid gap-4 bg-black">
-          <div>
-            <h2 className="text-3xl mr-48">Photos of {place.title}</h2>
+        <div className="p-8 bg-black flex flex-col items-center justify-center ">
+          <div className="mb-6">
             <button
               onClick={() => setShowAllPhotos(false)}
-              className="fixed right-12 top-8 flex gap-2 py-2 px- rounded-2xl shadow shadow-black bg-white text-black"
+              className="fixed right-12 top-8 flex gap-2 py-2 px-2 rounded-2xl shadow shadow-black bg-white text-black"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -29,31 +29,33 @@ const PlaceGallery = ({ place }) => {
               Close Photos
             </button>
           </div>
-          {place?.photos?.length > 0 &&
-            place.photos.map((photo) => (
-              <div>
-                <img
-                  className="cursor-pointer"
-                  onClick={() => setShowAllPhotos(true)}
-                  src={import.meta.env.VITE_BASEURL + "uploads/" + photo}
-                  alt=""
-                />
-              </div>
-            ))}
+          <div className="flex flex-col items-center justify-center">
+            {place?.photos?.length > 0 &&
+              place.photos.map((photo) => (
+                <div className="flex flex-col w-3/4 h-screen">
+                  <img
+                    className="cursor-pointer"
+                    onClick={() => setShowAllPhotos(true)}
+                    src={photo}
+                    alt="photo"
+                  />
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     );
   }
   return (
-    <div className=" relative">
-      <div className="grid gap-2 grid-cols-[2fr_1fr] rounded-2xl overflow-hidden">
+    <div className=" relative m-6">
+      <div className="grid gap-2 grid-cols-[2fr_1fr_1fr] rounded-2xl overflow-hidden">
         <div>
           {place.photos?.[0] && (
             <div>
               <img
                 onClick={() => setShowAllPhotos(true)}
                 className="aspect-square object-cover cursor-pointer"
-                src={import.meta.env.VITE_BASEURL + "uploads/" + place.photos[0]}
+                src={place.photos[0]}
                 alt=""
               />
             </div>
@@ -64,7 +66,7 @@ const PlaceGallery = ({ place }) => {
             <img
               onClick={() => setShowAllPhotos(true)}
               className="aspect-square object-cover cursor-pointer"
-              src={import.meta.env.VITE_BASEURL + "uploads/" + place.photos[1]}
+              src={place.photos[1]}
               alt=""
             />
           )}
@@ -72,8 +74,28 @@ const PlaceGallery = ({ place }) => {
             {place.photos?.[2] && (
               <img
                 onClick={() => setShowAllPhotos(true)}
-                className="aspect-square object-cover  cursor-pointerrelative top-2"
-                src={import.meta.env.VITE_BASEURL + "uploads/" + place.photos[2]}
+                className="aspect-square object-cover  cursor-pointer relative top-2"
+                src={place.photos[2]}
+                alt=""
+              />
+            )}
+          </div>
+        </div>
+        <div className="grid">
+          {place.photos?.[3] && (
+            <img
+              onClick={() => setShowAllPhotos(true)}
+              className="aspect-square object-cover cursor-pointer"
+              src={place.photos[3]}
+              alt=""
+            />
+          )}
+          <div className=" overflow-hidden">
+            {place.photos?.[4] && (
+              <img
+                onClick={() => setShowAllPhotos(true)}
+                className="aspect-square object-cover  cursor-pointer relative top-2"
+                src={place.photos[4]}
                 alt=""
               />
             )}

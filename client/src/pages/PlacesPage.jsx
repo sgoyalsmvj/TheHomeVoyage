@@ -3,6 +3,7 @@ import AccountNav from "../components/AccountNav";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import PlaceImg from "../components/PlaceImg";
+import {Button} from "@/components/ui/Button";
 export default function PlacesPage() {
   const [places, setPlaces] = useState([]);
   useEffect(() => {
@@ -37,16 +38,16 @@ export default function PlacesPage() {
         {places.length > 0 &&
           places.map((place,index) => (
             <div key={index}>
-              <div className="flex cursor-pointer gap-4 bg-gray-100 p-4 m-4 rounded-xl shadow-sm shadow-gray-300">
+              <div className="flex justify-center items-center cursor-pointer gap-4 bg-gray-100 p-4 m-4 rounded-xl shadow-sm shadow-gray-300">
                 <div className=" w-32  grow shrink-0">
-                  <PlaceImg place={place} />
+                  <PlaceImg className="rounded-lg" place={place} />
                 </div>
-                <div className="grow-0 shrink">
-                  <h2 className="text-xl">{place.title}</h2>
+                <div className="grow-0 shrink w-3/4">
+                  <h2 className="text-2xl font-medium">{place.title}</h2>
                   <p className="text-md mt-2">{place.description}</p>
                 </div>
                 <Link to={"/account/places/" + place._id}>
-                  <button>Edit</button>
+                  <Button>Edit</Button>
                 </Link>
               </div>
             </div>
