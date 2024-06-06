@@ -37,9 +37,9 @@ export default function PlacesPage() {
       <div className="mt-4">
         {places.length > 0 &&
           places.map((place, index) => (
-            <div key={index}>
-              <div className="flex justify-center items-center cursor-pointer gap-4 bg-gray-100 p-4 m-4 rounded-xl shadow-sm shadow-gray-300">
-                <div className=" w-32  grow shrink-0">
+            <div key={index} className="my-4">
+              <div className="flex justify-center items-center cursor-pointer gap-4 bg-gray-100 pr-4 m-4 rounded-xl shadow-sm shadow-gray-300">
+                <div className=" w-1/6  grow shrink-0 ">
                   <PlaceImg className="rounded-lg" place={place} />
                 </div>
                 <div className="grow-0 shrink w-3/4">
@@ -47,7 +47,7 @@ export default function PlacesPage() {
                   <p className="text-md mt-2">{place.description}</p>
                 </div>
                 <Link to={"/account/places/" + place._id}>
-                  <button className="h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90">Edit</button>
+                  <button className="h-10 px-4 py-2 bg-primary rounded-md  text-primary-foreground hover:bg-primary/90">Edit</button>
                 </Link>
               </div>
             </div>

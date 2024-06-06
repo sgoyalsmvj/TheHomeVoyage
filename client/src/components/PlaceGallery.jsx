@@ -5,12 +5,12 @@ const PlaceGallery = ({ place }) => {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   if (showAllPhotos) {
     return (
-      <div className=" absolute inset-0 bg-black text-white  min-h-screen">
-        <div className="p-8 bg-black flex flex-col items-center justify-center ">
+      <div className=" absolute inset-0 bg-red text-white  min-h-screen">
+        <div className="p-8 bg-red flex flex-col items-center justify-center ">
           <div className="mb-6">
             <button
               onClick={() => setShowAllPhotos(false)}
-              className="fixed right-12 top-8 flex gap-2 py-2 px-2 rounded-2xl shadow shadow-black bg-white text-black"
+              className="fixed right-12 top-8 flex gap-2 py-2 px-2 rounded-2xl shadow shadow-red bg-white text-red"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

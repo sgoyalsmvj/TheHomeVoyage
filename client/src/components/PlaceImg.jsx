@@ -8,6 +8,6 @@ export default function PlaceImg({place,index=0,className=null}) {
     className = 'object-cover';
   }
   return (
-    <Image className={className} src={place.photos[index]} alt="photo"/>
+    <Image className="rounded-l-xl" src={place.photos[index]} alt="photo"/>
   );
 }

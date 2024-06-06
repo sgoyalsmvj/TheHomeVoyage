@@ -24,16 +24,22 @@ const ProfilePage = () => {
     setUser(null);
   }
   if (redirect) {
-    return <Navigate to={'/'} />;
+    return <Navigate to={"/"} />;
   }
-  
+
   return (
     <div>
-     <AccountNav/>  
+      <AccountNav />
       {subPage === "profile" && (
         <div className="text-center max-w-lg mx-auto flex flex-col items-center justify-center">
-          Logged in as {user.name} ({user.email})
-          <Button className="primary max-w-sm mt-4" onClick={logout}>
+          <p>
+            <span>Logged in as</span>{" "}
+            <b>
+              {" "}
+              {user.name} ({user.email})
+            </b>
+          </p>
+          <Button className="primary  max-w-sm mt-4" onClick={logout}>
             Logout
           </Button>
         </div>

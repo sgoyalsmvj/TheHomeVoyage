@@ -68,7 +68,7 @@ export const PhotoUploader = ({ photos, onChange }) => {
           type="text"
           placeholder={"Add using a link ....jpg"}
         />
-        <Button onClick={addPhotoByLink} className="px-4 rounded-xl">
+        <Button  onClick={addPhotoByLink} className="px-4 rounded-xl">
           Add&nbsp;photo
         </Button>
       </div>

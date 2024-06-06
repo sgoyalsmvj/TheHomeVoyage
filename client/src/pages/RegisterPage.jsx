@@ -8,8 +8,8 @@ const RegisterPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [redirect, setRedirect] = useState(""); 
-  const {user} = useContext(UserContext);
+  const [redirect, setRedirect] = useState("");
+  const { user } = useContext(UserContext);
   async function registerUser(ev) {
     ev.preventDefault();
     try {
@@ -19,7 +19,7 @@ const RegisterPage = () => {
         password,
       });
       alert("registration successful!");
-      setRedirect("/") // Redirect to the home page
+      setRedirect("/"); // Redirect to the home page
     } catch (error) {
       alert("Registration Failed! Try Again later.");
     }
@@ -28,8 +28,8 @@ const RegisterPage = () => {
     ev.preventDefault();
     window.location.href = `${import.meta.env.VITE_BASEURL}/google`;
   }
-  if(redirect){
-    return <Navigate to={redirect} />
+  if (redirect) {
+    return <Navigate to={redirect} />;
   }
   return (
     <div className="mt-4 grow flex items-center justify-around ">
@@ -63,7 +63,7 @@ const RegisterPage = () => {
           </Button>
           <div className="text-center py-2 text-gray-500">
             Already A member?
-            <Link className="underline text-black" to={"/login"}>
+            <Link className="underline text-red" to={"/login"}>
               Login!
             </Link>
           </div>
