@@ -15,7 +15,8 @@
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.0.1",
     "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "razorpay": "^2.9.4"
   },
   "name": "backend",
   "version": "1.0.0",

@@ -14,4 +14,5 @@ placeRouter.delete('/places/:id',authenticateUser, deletePlace);
 placeRouter.get('/user-places',authenticateUser, userPlaces);
 
 
+
 module.exports = placeRouter;
